@@ -16,6 +16,7 @@ public extension View {
     ) -> some View {
         self.modifier(BottomDrawerModifier(
             bottomDrawerHeight: bottomDrawerHeight,
+            drawerTopCornerRadius: drawerTopCornerRadius,
             drawerContent: drawerContent,
             pullUpView: pullUpView
         ))
