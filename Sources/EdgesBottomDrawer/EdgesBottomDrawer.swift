@@ -45,6 +45,7 @@ struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: V
                         VStack(spacing: 0) {
                             self.pullUpView(-offset > (height - self.bottomDrawerHeight * 2))
                                 .frame(height: self.bottomDrawerHeight)
+                                .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: self.drawerTopCornerRadius))
                             drawerContent()
                         }
                         .frame(maxHeight: .infinity, alignment: .top)

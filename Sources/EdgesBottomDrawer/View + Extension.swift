@@ -10,6 +10,7 @@ import SwiftUI
 public extension View {
     func bottomDrawerView<DrawerContent: View, PullUpView: View>(
         bottomDrawerHeight: CGFloat = 100,
+        drawerTopCornerRadius: CGFloat = 32,
         @ViewBuilder drawerContent: @escaping () -> DrawerContent,
         @ViewBuilder pullUpView: @escaping (_ shouldGoUp: Bool) -> PullUpView
     ) -> some View {
