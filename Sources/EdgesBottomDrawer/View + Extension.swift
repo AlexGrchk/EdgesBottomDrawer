@@ -10,13 +10,15 @@ import SwiftUI
 public extension View {
     func bottomDrawerView<DrawerContent: View, PullUpView: View>(
         bottomDrawerHeight: CGFloat = 100,
-        drawerTopCornerRadius: CGFloat = 32,
+        drawerTopCornersRadius: CGFloat = 32,
+        ignoreTopSafeAres: Bool = false,
         @ViewBuilder drawerContent: @escaping () -> DrawerContent,
         @ViewBuilder pullUpView: @escaping (_ shouldGoUp: Bool) -> PullUpView
     ) -> some View {
-        self.modifier(BottomDrawerModifier(
+        self.modifier(EdgesBottomDrawerModifier(
             bottomDrawerHeight: bottomDrawerHeight,
-            drawerTopCornerRadius: drawerTopCornerRadius,
+            drawerTopCornersRadius: drawerTopCornersRadius,
+            ignoreTopSafeAreas: ignoreTopSafeAres,
             drawerContent: drawerContent,
             pullUpView: pullUpView
         ))

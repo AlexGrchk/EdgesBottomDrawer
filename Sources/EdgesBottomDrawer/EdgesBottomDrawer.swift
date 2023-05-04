@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: View {
+struct EdgesBottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: View {
     var content: () -> Content
     var drawerContent: () -> DrawerContent
     var pullUpView: (_ shouldGoUp: Bool) -> PullUpView
     var bottomDrawerHeight: CGFloat = 100
-    var drawerTopCornerRadius: CGFloat = 32
+    var drawerTopCornersRadius: CGFloat = 32
+    var ignoreTopSafeAreas: Bool = false
     
     @State var lastOffset: CGFloat = 0
     @State var offset: CGFloat = 0
@@ -20,7 +21,8 @@ struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: V
     
     init(
         bottomDrawerHeight: CGFloat = 100,
-        drawerTopCornerRadius: CGFloat = 32,
+        drawerTopCornersRadius: CGFloat = 32,
+        ignoreTopSafeAreas: Bool = false,
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder drawerContent: @escaping () -> DrawerContent,
         @ViewBuilder pullUpView: @escaping (_ shouldGoUp: Bool) -> PullUpView
@@ -28,7 +30,9 @@ struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: V
         self.content = content
         self.drawerContent = drawerContent
         self.pullUpView = pullUpView
+        self.drawerTopCornersRadius = drawerTopCornersRadius
         self.bottomDrawerHeight = bottomDrawerHeight
+        self.ignoreTopSafeAreas = ignoreTopSafeAreas
     }
     
     var body: some View {
@@ -41,22 +45,24 @@ struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: V
                 return AnyView(
                     ZStack {
                         Color.white
-                            .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: self.drawerTopCornerRadius))
+                            .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: self.drawerTopCornersRadius))
                         VStack(spacing: 0) {
                             self.pullUpView(-offset > (height - self.bottomDrawerHeight * 2))
                                 .frame(height: self.bottomDrawerHeight)
-                                .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: self.drawerTopCornerRadius))
+                                .clipShape(CustomCorners(corners: [.topLeft, .topRight], radius: self.drawerTopCornersRadius))
                             drawerContent()
                         }
                         .frame(maxHeight: .infinity, alignment: .top)
                     }
                     .offset(y: height - self.bottomDrawerHeight)
-                    .offset(y: -offset > 0 ? -offset <= (height - self.bottomDrawerHeight) ? offset: -(height - self.bottomDrawerHeight) : 0)
+                    .offset(y: -offset > 0 ? offset : 0)
                     .gesture(
                         DragGesture()
                             .updating(self.$gestureOffset, body: { value, out, _ in
                                 out = value.translation.height
-                                onChangeDragGesture()
+                                DispatchQueue.main.async {
+                                    self.offset = gestureOffset + lastOffset
+                                }
                             })
                             .onEnded({ value in
                                 let maxHeight = height - self.bottomDrawerHeight
@@ -72,18 +78,12 @@ struct BottomDrawerView<Content: View, DrawerContent: View, PullUpView: View>: V
                     )
                 )
             }
-            .ignoresSafeArea(.all, edges: .bottom)
-        }
-    }
-    
-    func onChangeDragGesture() {
-        DispatchQueue.main.async {
-            self.offset = gestureOffset + lastOffset
+            .ignoresSafeArea(.all, edges: self.ignoreTopSafeAreas ? [.top, .bottom] : [.bottom])
         }
     }
     
     func getBlurRadius() -> CGFloat {
-        let progress = -offset / (UIScreen.main.bounds.height - 100)
+        let progress = -offset / (UIScreen.main.bounds.height - self.bottomDrawerHeight)
         return progress * 20
     }
 }
