@@ -29,7 +29,8 @@ struct ContentView: View {
         .padding()
         .bottomDrawerView( // EdgesBottomDrawer
             bottomDrawerHeight: 80, /* Drawer height when closed*/
-            drawerTopCornerRadius: 32 /*Top corners radius*/) {
+            drawerTopCornerRadius: 32 /*Top corners radius*/,
+            ignoreTopSafeAres: false /* Ignore safe areas? */) {
                 // Drawer content
                 ZStack {
                     Color.black
@@ -56,6 +57,7 @@ struct ContentView: View {
 #### Parameters for `.bottomDrawerView()`
 - `bottomDrawerHeight` - drawer height when it's closed
 - `drawerTopCornerRadius` - drawer top corners radius
+- `ignoreTopSafeAres` - drawer will ignore top safe area
 - `drawerContent` - Content of the drawer that will be presented if user pulls drawer up
 - `pullUpView` - View that user should pull to open/close bottom drawer
 
