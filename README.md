@@ -8,7 +8,7 @@ This package will help you to add cool Bottom drawer view to your application
 #### Swift Package Manager
 - File > Swift Packages > Add Package Dependency
 - Add `https://github.com/AlexMochalov/EdgesBottomDrawer.git`
-- Select "Up to Next Major" with "0.0.3"
+- Select "Up to Next Major" with "0.0.4"
 
 ### Usage
 ```swift
